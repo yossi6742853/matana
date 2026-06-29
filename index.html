@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#d4a017">
+<title>מתנה לאבא ואמא — יום נישואים ל"ב 💝</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Heebo', sans-serif; background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); min-height: 100vh; }
+  .hero { background: linear-gradient(135deg, #d4a017 0%, #b8860b 100%); color: white; padding: 30px 0; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .hero h1 { font-weight: 900; font-size: 2.2rem; margin-bottom: 8px; }
+  .hero .subtitle { font-size: 1.1rem; opacity: 0.95; }
+  .progress-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); margin: -40px auto 30px; max-width: 700px; }
+  .goal-amount { font-size: 2.5rem; font-weight: 900; color: #d4a017; text-align: center; }
+  .progress { height: 30px; border-radius: 15px; overflow: hidden; background: #f5f5f5; }
+  .progress-bar { background: linear-gradient(90deg, #ffd700, #d4a017); font-weight: bold; font-size: 1rem; transition: width 0.8s ease; }
+  .stats { display: flex; justify-content: space-around; margin-top: 20px; flex-wrap: wrap; }
+  .stat { text-align: center; padding: 10px; }
+  .stat .num { font-size: 1.8rem; font-weight: 900; color: #b8860b; }
+  .stat .label { font-size: 0.9rem; color: #666; }
+  .pledge-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-bottom: 15px; transition: transform 0.2s; }
+  .pledge-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+  .pledge-card.paid { background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%); border-right: 5px solid #28a745; }
+  .pledge-card.pending { background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border-right: 5px solid #ffc107; }
+  .pledge-card.none { background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); border-right: 5px solid #dc3545; }
+  .pledge-row { display: flex; align-items: center; justify-content: space-between; }
+  .pledge-name { font-size: 1.3rem; font-weight: 700; }
+  .pledge-amount { font-size: 1.5rem; font-weight: 900; color: #d4a017; }
+  .pledge-amount.zero { color: #dc3545; }
+  .avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #d4a017, #b8860b); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; margin-left: 12px; }
+  .product-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); margin-bottom: 20px; text-align: center; }
+  .heart-anim { animation: pulse 1.5s ease-in-out infinite; display: inline-block; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+  .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+  .modal-content { border-radius: 16px; }
+  .btn-pledge { background: linear-gradient(135deg, #d4a017, #b8860b); color: white; font-weight: 700; padding: 12px 30px; border-radius: 30px; border: none; font-size: 1.1rem; }
+  .btn-pledge:hover { background: linear-gradient(135deg, #b8860b, #8b6914); color: white; }
+  .sync-indicator { position: fixed; bottom: 20px; left: 20px; background: white; padding: 8px 16px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-size: 0.85rem; }
+  .sync-indicator.syncing { color: #007bff; }
+  .sync-indicator.idle { color: #28a745; }
+  .sync-indicator.error { color: #dc3545; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>💝 מתנה לאבא ואמא 💝</h1>
+  <div class="subtitle">יום נישואים ל"ב · משפחת שניידר</div>
+</div>
+
+<div class="container">
+  <div class="progress-card">
+    <div class="text-center mb-3">
+      <div style="color:#666; font-size: 1rem;">היעד</div>
+      <div class="goal-amount">₪<span id="goalAmount">2175</span></div>
+      <div style="color:#666; font-size:0.95rem;">אי למטבח 🍳</div>
+    </div>
+    <div class="progress mb-3">
+      <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%">₪0</div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="totalRaised">₪0</div><div class="label">נאסף</div></div>
+      <div class="stat"><div class="num" id="totalRemaining">₪2175</div><div class="label">חסר</div></div>
+      <div class="stat"><div class="num" id="participantsCount">0/10</div><div class="label">השתתפו</div></div>
+    </div>
+  </div>
+
+  <div class="product-card">
+    <i class="bi bi-house-heart" style="font-size: 3rem; color: #d4a017;"></i>
+    <h4 style="margin-top: 10px;">המתנה — אי למטבח</h4>
+    <a href="https://www.payngo.co.il/298880.html" target="_blank" class="btn btn-outline-warning btn-sm mt-2">
+      <i class="bi bi-link-45deg"></i> צפה במוצר ב-Pay&Go
+    </a>
+  </div>
+
+  <h4 class="mb-3 mt-4"><i class="bi bi-people-fill"></i> המשתתפים</h4>
+  <div id="pledgesList"></div>
+
+  <button class="btn btn-pledge w-100 mt-3 mb-4" onclick="openPledgeModal()">
+    <i class="bi bi-plus-circle"></i> עדכן את ההתחייבות שלי
+  </button>
+
+  <div class="text-center text-muted small mb-4">
+    💛 כל שקל יתקבל בברכה · רחלי תרכז את ההעברות
+  </div>
+</div>
+
+<!-- Pledge Modal -->
+<div class="modal fade" id="pledgeModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="background: linear-gradient(135deg, #d4a017, #b8860b); color: white;">
+        <h5 class="modal-title">💝 עדכון התחייבות</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">מי אני?</label>
+          <select id="pledgeName" class="form-select form-select-lg"></select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">כמה אני מתחייב/ת לשלם?</label>
+          <div class="input-group input-group-lg">
+            <span class="input-group-text">₪</span>
+            <input type="number" id="pledgeAmount" class="form-control" min="0" step="10" placeholder="לדוגמה: 250">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">סטטוס תשלום</label>
+          <select id="pledgeStatus" class="form-select">
+            <option value="pending">התחייבתי - עוד לא העברתי</option>
+            <option value="paid">כבר העברתי 🎉</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">הערה (אופציונלי)</label>
+          <input type="text" id="pledgeNote" class="form-control" placeholder="לדוגמה: אעביר ביום ראשון">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-pledge" onclick="savePledge()">
+          <i class="bi bi-check2-circle"></i> שמור
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sync-indicator idle" id="syncStatus">
+  <i class="bi bi-cloud-check"></i> <span id="syncText">מסונכרן</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
