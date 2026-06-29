@@ -93,36 +93,35 @@ function setSync(status) {
 function render() {
   const pledges = state.pledges || {};
   const list = document.getElementById('pledgesList');
-  list.innerHTML = FAMILY.map(p => {
-    const pledge = pledges[p.id];
-    const amount = pledge ? pledge.amount : 0;
-    const status = pledge ? pledge.status : 'none';
-    const note = pledge ? (pledge.note || '') : '';
-    const updatedAt = pledge ? pledge.updated_at : null;
-    const cls = !pledge || amount === 0 ? 'none' : (status === 'paid' ? 'paid' : 'pending');
-    const statusBadge = !pledge || amount === 0
-      ? '<span class="badge bg-danger">עדיין לא עדכן</span>'
-      : status === 'paid'
-        ? '<span class="badge bg-success">✓ שולם</span>'
-        : '<span class="badge bg-warning text-dark">⏳ התחייב</span>';
-    const updatedStr = updatedAt ? new Date(updatedAt).toLocaleDateString('he-IL') : '';
-    return `
-      <div class="pledge-card ${cls}">
-        <div class="pledge-row">
-          <div style="display:flex;align-items:center;">
-            <div class="avatar">${p.emoji}</div>
-            <div>
-              <div class="pledge-name">${p.name}</div>
-              <div class="small text-muted">${statusBadge} ${updatedStr ? '· ' + updatedStr : ''}</div>
-              ${note ? '<div class="small text-muted mt-1">💭 ' + note + '</div>' : ''}
-              ${p.note ? '<div class="small text-warning fw-bold">⭐ ' + p.note + '</div>' : ''}
-            </div>
+  // Show ONLY pledges with amount > 0 (privacy)
+  const pledgers = FAMILY
+    .map(p => ({ ...p, pledge: pledges[p.id] }))
+    .filter(p => p.pledge && p.pledge.amount > 0)
+    .sort((a, b) => new Date(b.pledge.updated_at || 0) - new Date(a.pledge.updated_at || 0));
+
+  if (pledgers.length === 0) {
+    list.innerHTML = `<div class="pledge-anonymous">
+      <i class="bi bi-hourglass-split"></i> עוד אף אחד לא עדכן. היה הראשון/ה!
+    </div>`;
+  } else {
+    list.innerHTML = pledgers.map(p => {
+      const pl = p.pledge;
+      const cls = pl.status === 'paid' ? 'paid' : 'pending';
+      const statusIcon = pl.status === 'paid' ? '✓ שולם' : '⏳ התחייב';
+      const updatedStr = pl.updated_at ? new Date(pl.updated_at).toLocaleDateString('he-IL') : '';
+      return `
+        <div class="pledge-card ${cls}">
+          <div class="pledge-avatar">${p.emoji}</div>
+          <div class="pledge-info">
+            <div class="pledge-name">${p.name}</div>
+            <div class="pledge-meta">${statusIcon} · ${updatedStr}</div>
+            ${pl.note ? '<div class="pledge-note">💭 ' + pl.note + '</div>' : ''}
           </div>
-          <div class="pledge-amount ${amount === 0 ? 'zero' : ''}">₪${amount}</div>
+          <div class="pledge-amount"><span class="currency">₪</span>${pl.amount}</div>
         </div>
-      </div>
-    `;
-  }).join('');
+      `;
+    }).join('');
+  }
 
   // Update progress
   const total = Object.values(pledges).reduce((s, p) => s + (p.amount || 0), 0);
