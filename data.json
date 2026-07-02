@@ -8,9 +8,15 @@
     },
     "rachel": {
       "amount": 250,
+      "status": "paid",
+      "note": "מזל טובבבב!",
+      "updated_at": "2026-07-02T05:20:18.186Z"
+    },
+    "ruti": {
+      "amount": 250,
       "status": "pending",
-      "note": "",
-      "updated_at": "2026-07-02T09:23:09.276Z"
+      "note": "מזל טובבבב!",
+      "updated_at": "2026-07-02T09:23:59.022Z"
     }
   }
 }
